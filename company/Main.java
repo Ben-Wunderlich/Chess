@@ -16,11 +16,14 @@ public class Main{
         }
         System.out.println();
     }
-    }
+    }//not used anymore
 
     //System.out.println(board.length); is the num of rows
     public static Piece[][] board;
     public static GuiBase gui;
+    private static Boolean playSide = true;
+
+    private static int[][] checkedSquares;
     public static void main(String[] args) {
         ///Random rand = new Random();
         //System.out.println(rand.nextInt(6)); // between 0-5
@@ -31,5 +34,12 @@ public class Main{
         showBoard(board);
         System.out.println("\n");
 
+    }
+
+     public static boolean getPlaySide(){
+        return playSide;
+    }
+    public static void rotateSide(){
+        playSide = !playSide;
     }
 }

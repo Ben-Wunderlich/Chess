@@ -5,6 +5,7 @@ public class Piece {
     private boolean side; // note that white is true and black is false
     private int[] rowFactors;
     private int[] colFactors;
+    private boolean hasMoved = false;
 
     public void destroyPiece(){
         System.out.println("piece has been destroyed");
@@ -26,10 +27,8 @@ public class Piece {
     public void CheckValidSquares(Coordinate location){
         int[] rowFactor = this.rowFactors;
         int[] colFactor = this.colFactors;
-        System.out.println(rowFactor[2]);
 
-        for(int i = 0;i < rowFactor.length-1;i++){//could use either as max
-            //System.out.println("I AM CALLED");
+        for(int i = 0;i < rowFactor.length;i++){//could use either as max
             int curRowFact = rowFactor[i];
             int curColFact = colFactor[i];
             checkDirection(location, curRowFact, curColFact);
@@ -80,6 +79,14 @@ public class Piece {
     public void setFactors(int[] rowFactors, int[] colFactors){
         this.rowFactors = rowFactors;
         this.colFactors = colFactors;
+    }
+
+    public void pieceMoved(){
+        this.hasMoved = true;
+    }
+
+    public boolean hasMoved(){
+        return hasMoved;
     }
 
 }

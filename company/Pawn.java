@@ -1,12 +1,12 @@
 package com.company;
 
 public class Pawn extends Piece {
-    private boolean hasMoved = false;
 
     public Pawn(boolean side) {
         super(side);
         this.setName("pawn");
     }
+
     public void CheckValidSquares(Coordinate location){
         Piece[][] board = Main.board;
         int column = location.getCol();
@@ -28,23 +28,19 @@ public class Pawn extends Piece {
                 if(col == column){//if that square is directly in front of it
                     Main.gui.setBlue(targetRow, col);
 
-                    if(!hasMoved && board[targetRow + side_factor][col].getName().equals("empty")){
+                    if(!this.hasMoved() && board[targetRow + side_factor][col].getName().equals("empty")){
                         //if hasnt move and one square up is enpty
                         Main.gui.setBlue(targetRow+side_factor, col);
                     }
                 }
-                continue;
             }
-            else if (col!= column) {//if it is other column/diagonal
+            else if (col != column) {//if it is other column/diagonal
                  if(board[targetRow][col].getSide() != this.getSide()){
-                     Main.gui.setRed(targetRow, column);
+                     Main.gui.setRed(targetRow, col);
                  }
             }
         }
     }
 
-    public void movedPawn(){
-        this.hasMoved = true;
-    }
 }
 

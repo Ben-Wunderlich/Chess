@@ -9,7 +9,6 @@ public class BoardChange {
         Piece board[][] = new Piece[ROWS][COLS];
 
         boolean side;
-        //GuiBase gui = g;
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
                 if (row > 1 && row < 6) {
@@ -36,7 +35,7 @@ public class BoardChange {
                     if (side) {
                         board[row][col] = new Queen(true);
                     } else {
-                        board[row][col] = new King(true);
+                        board[row][col] = new King(false);
                     }
                 }
                 else if(col==4){
@@ -44,7 +43,7 @@ public class BoardChange {
                         board[row][col] = new King(true);
                     }
                     else{
-                        board[row][col] = new Queen(true);
+                        board[row][col] = new Queen(false);
                     }
                 }
             }
@@ -62,17 +61,17 @@ public class BoardChange {
     }
 
     public static Piece[][] movePiece(Coordinate start, Coordinate end){
-        Piece[][] modBoard = Main.board;
         Piece[][] board = Main.board;
+        Piece[][] modBoard = board;
 
         int endRow = end.getRow();
         int endCol = end.getCol();
         int strtRow = start.getRow();
         int strtCol = start.getCol();
 
-        /*if(board[strtRow][strtCol].getName().equals("pawn")){
-            board[strtRow][strtCol].movedPawn();
-        }*/
+        if(board[strtRow][strtCol].getName().equals("pawn")){
+            board[strtRow][strtCol].pieceMoved();
+        }
 
         Piece saveEnd = new Empty(false);
 

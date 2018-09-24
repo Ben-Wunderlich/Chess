@@ -14,15 +14,13 @@ public class King extends Piece{
         Main.gui.resetColours();
         boolean theSide;
         String targetName;
-        for(int col = column-1; col <= col+1; ++col){
+        for(int col = column-1; col <= column+1; ++col){
             for(int row = rows-1; row <= rows+1; ++row){
-
                 if(!Piece.isValidCoord(row, col)){
                     continue;
                 }
 
                 targetName = board[row][col].getName();
-
                 if (targetName.equals("empty")){
                     Main.gui.setBlue(row, col);
                     continue;
