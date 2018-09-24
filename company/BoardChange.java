@@ -9,10 +9,11 @@ public class BoardChange {
         Piece board[][] = new Piece[ROWS][COLS];
 
         boolean side;
+        //GuiBase gui = g;
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
                 if (row > 1 && row < 6) {
-                    board[row][col] = new Empty();
+                    board[row][col] = new Empty(false);
                     continue;
                 }
                 else {
@@ -25,7 +26,6 @@ public class BoardChange {
                 else if(col==0 || col==7){
                     board[row][col] = new Rook(side);
                 }//biotech
-                //application for due by friday ecs 204 //yellow form
                 else if(col == 1 || col == 6){
                     board[row][col] = new Bishop(side);
                 }
@@ -34,17 +34,17 @@ public class BoardChange {
                 }
                 else if(col == 3) {
                     if (side) {
-                        board[row][col] = new Queen(side);
+                        board[row][col] = new Queen(true);
                     } else {
-                        board[row][col] = new King(side);
+                        board[row][col] = new King(true);
                     }
                 }
                 else if(col==4){
                     if(side){
-                        board[row][col] = new King(side);
+                        board[row][col] = new King(true);
                     }
                     else{
-                        board[row][col] = new Queen(side);
+                        board[row][col] = new Queen(true);
                     }
                 }
             }
@@ -60,4 +60,27 @@ public class BoardChange {
             return true;
         }
     }
+
+    public static Piece[][] movePiece(Coordinate start, Coordinate end){
+        Piece[][] modBoard = Main.board;
+        Piece[][] board = Main.board;
+
+        int endRow = end.getRow();
+        int endCol = end.getCol();
+        int strtRow = start.getRow();
+        int strtCol = start.getCol();
+
+        /*if(board[strtRow][strtCol].getName().equals("pawn")){
+            board[strtRow][strtCol].movedPawn();
+        }*/
+
+        Piece saveEnd = new Empty(false);
+
+        modBoard[endRow][endCol] = board[strtRow][strtCol];//makes destination be start
+
+        modBoard[strtRow][strtCol] = saveEnd;
+
+        return modBoard;
+    }
+
 }

@@ -6,26 +6,27 @@ public class Knight extends Piece {
         this.setName("knight");
     }
 
-    public void checkValidSquares(Piece[][] board, Coordinate location){
+    public void CheckValidSquares(Coordinate location){
         int curRow = location.getRow();
         int curCol = location.getCol();
 
         int[] rowMods = {1,-1,2,1,-1,-2,-2,-1};
         int[] colMods = {-2,2,1,2,2,1,-1,-2};
 
+        Main.gui.resetColours();
         for(int i = 0; i < colMods.length; ++i){
             int tempRow = curRow + rowMods[i];
             int tempCol = curCol + colMods[i];
 
-            if(!Piece.isValidCoord(tempRow, tempCol, board)){
+            if(!Piece.isValidCoord(tempRow, tempCol)){
                 continue;
             }
 
-            if(board[tempRow][tempCol].getName().equals("empty")){
-                //make square blue
+            if(Main.board[tempRow][tempCol].getName().equals("empty")){
+                Main.gui.setBlue(tempRow, tempCol);
             }
-            else if(board[tempRow][tempCol].getSide() != this.getSide()){
-                //make square red
+            else if(Main.board[tempRow][tempCol].getSide() != this.getSide()){
+                Main.gui.setRed(tempRow, tempCol);
             }
         }
     }

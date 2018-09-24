@@ -19,22 +19,17 @@ public class Main{
     }
 
     //System.out.println(board.length); is the num of rows
-    static Piece[][] board;
+    public static Piece[][] board;
+    public static GuiBase gui;
     public static void main(String[] args) {
         ///Random rand = new Random();
         //System.out.println(rand.nextInt(6)); // between 0-5
 
         boolean currSide = true;
         board = BoardChange.makeBoard();
+        gui = new GuiBase();
         showBoard(board);
-        //board = Piece.movePiece(board, new Coordinate(0, 0), new Coordinate(4, 7));
         System.out.println("\n");
-        showBoard(board);
-
-        /*GuiBase gary =*/ new GuiBase();
 
     }
-
-
-
 }

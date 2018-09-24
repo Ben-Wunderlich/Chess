@@ -5,11 +5,13 @@ import java.awt.event.*;
 class GuiBase extends Frame implements ActionListener{
 
     Frame cf;
+    private Button[][] GuiBoard;
+    private Coordinate lastMove;
     GuiBase() {
         Piece[][] board = Main.board;
         cf = new Frame();
 
-        Button[][] GuiBoard = new Button[8][8];
+        GuiBoard = new Button[8][8];
         for(int col = 0; col < 8; col++) {
             for(int row = 0; row < 8; row++) {
 
@@ -19,6 +21,7 @@ class GuiBase extends Frame implements ActionListener{
                 cf.add(GuiBoard[row][col]);
             }
         }
+        resetColours();
 
         cf.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we){
@@ -31,8 +34,25 @@ class GuiBase extends Frame implements ActionListener{
         cf.setVisible(true);
     }
     public void actionPerformed(ActionEvent ae){
-        Coordinate selSquare = getCoordinates(ae.getSource().toString());
-        //System.out.println(ae.getSource().toString());
+        Coordinate s = getCoordinates(ae.getSource().toString());
+        int row = s.getRow();
+        int col = s.getCol();
+
+        int colour = GuiBoard[row][col].getBackground().getRGB();
+       if(colour == -16711681){//if it is blue
+           Coordinate target = new Coordinate(row, col);
+            Main.board = BoardChange.movePiece(lastMove, target);
+            resetColours();
+        }
+
+        lastMove = new Coordinate(row, col);
+
+        if(Main.board[row][col].getName().equals("empty")){
+            resetColours();
+            cf.repaint();
+            return;
+        }
+        Main.board[row][col].CheckValidSquares(s);
     }
 
     private static Coordinate getCoordinates(String source){
@@ -41,11 +61,42 @@ class GuiBase extends Frame implements ActionListener{
         int col = Integer.parseInt(componenents[1]);
 
         row = (row - 15) / 50;
-        col = (col - 30) / 50;
-        System.out.println("this should be row"+row);
-        System.out.println("this should be column"+col);
-        System.out.println();
+        col = (col - 15) / 50;
+
         return new Coordinate(row,col);
+    }
+
+    public void setBlue(int row, int col){
+        GuiBoard[row][col].setBackground(Color.cyan);
+    }
+
+    public void setRed(int row, int col){
+        GuiBoard[row][col].setBackground(Color.red);
+    }
+
+    public void resetColours(){
+        boolean isWhite = true;
+        for(Button[] a: GuiBoard){
+            isWhite = !isWhite;
+            for(Button c: a){
+                isWhite = !isWhite;
+                if(isWhite){
+                    c.setBackground(Color.LIGHT_GRAY);
+                }
+                else{
+                    c.setBackground(Color.GRAY);
+                }
+            }
+        }
+        cf.repaint();
+    }
+
+    public Coordinate getLastMove(){
+        return this.lastMove;
+    }
+
+    public int getColour(int row, int col){
+        return GuiBoard[row][col].getBackground().getRGB();
     }
 }
 

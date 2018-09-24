@@ -6,26 +6,31 @@ public class King extends Piece{
         this.setName("king");
     }
 
-    public void checkValidSquares(Piece[][] board, Coordinate location){
-        int col = location.getCol();
+    public void CheckValidSquares(Coordinate location){
+        Piece[][] board = Main.board;
+        int column = location.getCol();
         int rows = location.getRow();
 
-        for(int column = col-1; column <= col+1; ++column){
+        Main.gui.resetColours();
+        boolean theSide;
+        String targetName;
+        for(int col = column-1; col <= col+1; ++col){
             for(int row = rows-1; row <= rows+1; ++row){
 
-                if(!Piece.isValidCoord(row, col, board)){
+                if(!Piece.isValidCoord(row, col)){
                     continue;
                 }
 
-                String targetName = board[row][column].getName();
+                targetName = board[row][col].getName();
 
                 if (targetName.equals("empty")){
-                    //board[row][column]. make it blue
+                    Main.gui.setBlue(row, col);
+                    continue;
                 }
 
-                boolean theSide = board[row][column].getSide();
+                theSide = board[row][col].getSide();
                 if (theSide != this.getSide()){
-                    //make red
+                    Main.gui.setRed(row, col);
                 }
             }
         }

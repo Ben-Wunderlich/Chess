@@ -23,48 +23,51 @@ public class Piece {
         return this.side;
     }
 
-    public void CheckValidSquares(Piece[][] board, Coordinate location){
+    public void CheckValidSquares(Coordinate location){
         int[] rowFactor = this.rowFactors;
         int[] colFactor = this.colFactors;
+        System.out.println(rowFactor[2]);
 
         for(int i = 0;i < rowFactor.length-1;i++){//could use either as max
+            //System.out.println("I AM CALLED");
             int curRowFact = rowFactor[i];
             int curColFact = colFactor[i];
+            checkDirection(location, curRowFact, curColFact);
         }
     }
 
-    public void checkDirection(Piece[][] board, Coordinate location, int rowFactor, int colFactor){
+    public void checkDirection(Coordinate location, int rowFactor, int colFactor){
+        Piece[][] board = Main.board;
         boolean hitEnd = false;
-        int curRow = location.getRow();
-        int curCol = location.getCol();
-
-        int maxRow = board.length-1;
-        int maxCol = board[0].length-1;
+        int row = location.getRow();
+        int col = location.getCol();
 
         while(!hitEnd){
-            curRow += rowFactor;
-            curCol += colFactor;
+            row += rowFactor;
+            col += colFactor;
 
-            if(!Piece.isValidCoord(curRow, curCol, board)){
+            if(!Piece.isValidCoord(row, col)){
+                break;
+            }
+
+            if(board[row][col].getName().equals("empty")){
+                Main.gui.setBlue(row, col);
                 continue;
             }
-
-            if(board[curRow][curCol].getName().equals("")){
-                //make it blue
+            if(board[row][col].side != this.side){
+                Main.gui.setRed(row, col);
             }
-            else if(board[curRow][curCol].side != this.side){
-                //make it red
-                hitEnd = true;
-            }
+            hitEnd = true;
+            break;
         }
 
     }
-    public static boolean isValidCoord(int row, int col, Piece[][] board){
+    public static boolean isValidCoord(int row, int col){
 
         if(row < 0 || col < 0){
             return false;
         }
-        if (row > board.length-1 || col > board[0].length-1){
+        if (row > Main.board.length-1 || col > Main.board[0].length-1){
             return false;
         }
         return true;
@@ -77,24 +80,6 @@ public class Piece {
     public void setFactors(int[] rowFactors, int[] colFactors){
         this.rowFactors = rowFactors;
         this.colFactors = colFactors;
-    }
-
-    public static Piece[][] movePiece(Piece[][] board, Coordinate start, Coordinate end){
-        Piece[][] modBoard = board;
-        //board[start.getRow()][start.getRow].colour is a default colour
-        //call method to return all colours to default
-        //return board
-
-        Piece saveEnd = board[end.getRow()][end.getCol()];
-
-        modBoard[end.getRow()][end.getCol()] = board[start.getRow()][start.getCol()];
-        //if it is blue
-        modBoard[start.getRow()][start.getCol()] = saveEnd;
-        //else
-        //modBoard[start.getRow()][start.getCol()] = new Empty();
-
-        //make all squares not blue or red and switch sides
-        return modBoard;
     }
 
 }
