@@ -8,14 +8,13 @@ class GuiBase extends Frame implements ActionListener{
     private Button[][] GuiBoard;
     private Coordinate lastMove;
     GuiBase() {
-        Piece[][] board = Main.board;
         cf = new Frame();
 
         GuiBoard = new Button[8][8];
         for(int col = 0; col < 8; col++) {
             for(int row = 0; row < 8; row++) {
 
-                GuiBoard[row][col] = new Button(boardName(row, col));
+                GuiBoard[row][col] = new Button(getName(row, col));
                 GuiBoard[row][col].setBounds(15 + 50 * col, 30 + row*50, 50, 50);
                 GuiBoard[row][col].addActionListener(this);
                 cf.add(GuiBoard[row][col]);
@@ -37,26 +36,29 @@ class GuiBase extends Frame implements ActionListener{
         Coordinate s = getCoordinates(ae.getSource().toString());
         int row = s.getRow();
         int col = s.getCol();
+        boolean side = Main.getPlaySide();
+        Piece[][] board = Main.board;
 
         int colour = GuiBoard[row][col].getBackground().getRGB();
        if(colour == -16711681 || colour == -65536){//if it is blue or red
            Coordinate target = new Coordinate(row, col);
-            Main.board = BoardChange.movePiece(lastMove, target);
+            BoardChange.movePiece(lastMove, target);
             resetNames();
             resetColours();
+            Main.setBoolBoard(BoolGrids.makeBoolBoard(side), side);
             Main.rotateSide();
             return;
         }
 
         lastMove = new Coordinate(row, col);
-        String squareName = Main.board[row][col].getName();
+        String squareName = board[row][col].getName();
         if(squareName.equals("empty")){
             resetColours();
             cf.repaint();
             return;
         }
-        if(Main.board[row][col].getSide() == Main.getPlaySide()){//if it is their turn
-            Main.board[row][col].CheckValidSquares(s);
+        if(board[row][col].getSide() == side){//if it is their turn
+            board[row][col].CheckValidSquares(s);
         }
         else{
             resetColours();
@@ -103,13 +105,6 @@ class GuiBase extends Frame implements ActionListener{
         }
         cf.repaint();
     }
-    public Coordinate getLastMove(){
-        return this.lastMove;
-    }
-
-    public int getColour(int row, int col){
-        return GuiBoard[row][col].getBackground().getRGB();
-    }
 
     private void resetNames(){
         for(int row = 0; row < 8; row++){
@@ -125,7 +120,7 @@ class GuiBase extends Frame implements ActionListener{
         }
     }
 
-    private String boardName(int row, int col){
+    private String getName(int row, int col){
         Piece[][] board = Main.board;
         String name = board[row][col].getName();
         if(name.equals("empty")){

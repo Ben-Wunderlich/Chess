@@ -1,16 +1,13 @@
 package com.company;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 public class Piece {
     private String name;
     private boolean side; // note that white is true and black is false
     private int[] rowFactors;
     private int[] colFactors;
     private boolean hasMoved = false;
-
-    public void destroyPiece(){
-        System.out.println("piece has been destroyed");
-        this.name = "empty";//dont know how this will work
-    }
 
     public String getName(){
         return this.name;
@@ -24,7 +21,11 @@ public class Piece {
         return this.side;
     }
 
+    Coordinate[] checkedSpots;
+    int curSpot = 0;
     public void CheckValidSquares(Coordinate location){
+        curSpot = 0;
+        checkedSpots = new Coordinate[28];
         int[] rowFactor = this.rowFactors;
         int[] colFactor = this.colFactors;
 
@@ -33,6 +34,9 @@ public class Piece {
             int curColFact = colFactor[i];
             checkDirection(location, curRowFact, curColFact);
         }
+
+        if(Main.getIsDryRun()) {
+            BoolGrids.setCoords(checkedSpots); }
     }
 
     public void checkDirection(Coordinate location, int rowFactor, int colFactor){
@@ -40,6 +44,8 @@ public class Piece {
         boolean hitEnd = false;
         int row = location.getRow();
         int col = location.getCol();
+
+        boolean isDryRun = Main.getIsDryRun();
 
         while(!hitEnd){
             row += rowFactor;
@@ -50,16 +56,25 @@ public class Piece {
             }
 
             if(board[row][col].getName().equals("empty")){
-                Main.gui.setBlue(row, col);
+                if(!isDryRun) {
+                    Main.gui.setBlue(row, col);
+                }
+                else{checkedSpots[curSpot] = new Coordinate(row, col);
+                curSpot++;
+                }
                 continue;
             }
             if(board[row][col].side != this.side){
-                Main.gui.setRed(row, col);
+                if(!isDryRun){
+                    Main.gui.setRed(row, col);
+                }
+                else{
+                    checkedSpots[curSpot] = new Coordinate(row, col);
+                    curSpot++;
+                }
             }
             hitEnd = true;
-            break;
         }
-
     }
     public static boolean isValidCoord(int row, int col){
 

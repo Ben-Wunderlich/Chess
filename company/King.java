@@ -14,6 +14,11 @@ public class King extends Piece{
         Main.gui.resetColours();
         boolean theSide;
         String targetName;
+
+        Coordinate[] checkedSpots = new Coordinate[8];
+        int curspot = 0;
+        boolean isDryRun = Main.getIsDryRun();
+
         for(int col = column-1; col <= column+1; ++col){
             for(int row = rows-1; row <= rows+1; ++row){
                 if(!Piece.isValidCoord(row, col)){
@@ -22,15 +27,28 @@ public class King extends Piece{
 
                 targetName = board[row][col].getName();
                 if (targetName.equals("empty")){
-                    Main.gui.setBlue(row, col);
-                    continue;
+                    if(!isDryRun) {
+                        Main.gui.setBlue(row, col);
+                        continue;
+                    }
+                    else{
+                        checkedSpots[curspot] = new Coordinate(row, col);
+                        curspot++;
+                    }
                 }
 
                 theSide = board[row][col].getSide();
                 if (theSide != this.getSide()){
-                    Main.gui.setRed(row, col);
+                    if(!isDryRun) {
+                        Main.gui.setRed(row, col);
+                    }
+                    else{
+                        checkedSpots[curspot] = new Coordinate(row, col);
+                        curspot++;
+                    }
                 }
             }
         }
+        if(isDryRun) {BoolGrids.setCoords(checkedSpots); }
     }
 }

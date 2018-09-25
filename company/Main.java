@@ -22,14 +22,21 @@ public class Main{
     public static Piece[][] board;
     public static GuiBase gui;
     private static Boolean playSide = true;
+    private static Boolean isDryRun = false;
 
-    private static int[][] checkedSquares;
+    private static boolean[][] checkedSquaresWhite;
+    private static boolean[][] checkedSquaresBlack;
     public static void main(String[] args) {
         ///Random rand = new Random();
         //System.out.println(rand.nextInt(6)); // between 0-5
 
         boolean currSide = true;
         board = BoardChange.makeBoard();
+
+
+        //checkedSquaresBlack = BoolGrids.makeBoolBoard(false);
+        //checkedSquaresWhite = BoolGrids.makeBoolBoard(true);
+
         gui = new GuiBase();
         showBoard(board);
         System.out.println("\n");
@@ -41,5 +48,20 @@ public class Main{
     }
     public static void rotateSide(){
         playSide = !playSide;
+    }
+
+    public static void setBoolBoard(boolean[][] newBoard, boolean side){
+        if(side){
+            checkedSquaresWhite = newBoard;
+        }
+        else{
+            checkedSquaresBlack = newBoard;
+        }
+    }
+    public static boolean getIsDryRun(){
+        return isDryRun;
+    }
+    public static void setIsDryRun(boolean isUnlocked){
+        isDryRun = isUnlocked;
     }
 }

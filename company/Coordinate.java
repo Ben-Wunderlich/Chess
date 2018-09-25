@@ -18,4 +18,10 @@ public class Coordinate {
         ROW = row;
         COL = col;
     }
+
+    public boolean equals(Coordinate c){
+        boolean rowEqual = this.getRow() == c.getRow();
+        boolean colEqual = this.getCol() == c.getCol();
+        return rowEqual && colEqual;
+    }
 }

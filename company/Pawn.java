@@ -17,6 +17,11 @@ public class Pawn extends Piece {
             side_factor = 1;
         }
 
+        boolean isDryRun = Main.getIsDryRun();
+
+        Coordinate[] checkedSpots = new Coordinate[2];
+        int curSpot = 0;
+
         int targetRow = row + side_factor;
 
         Main.gui.resetColours();
@@ -26,21 +31,35 @@ public class Pawn extends Piece {
             }
             if (board[targetRow][col].getName().equals("empty")){//if a square is empty
                 if(col == column){//if that square is directly in front of it
-                    Main.gui.setBlue(targetRow, col);
+                    if(!isDryRun) {
+                        Main.gui.setBlue(targetRow, col);
+                    }
 
                     if(!this.hasMoved() && board[targetRow + side_factor][col].getName().equals("empty")){
                         //if hasnt move and one square up is enpty
-                        Main.gui.setBlue(targetRow+side_factor, col);
+                        if(!isDryRun){
+                            Main.gui.setBlue(targetRow+side_factor, col);
+                        }
                     }
+                }
+                else if(isDryRun && col != column){
+                    checkedSpots[curSpot] = new Coordinate(targetRow, col);
+                    curSpot++;
                 }
             }
             else if (col != column) {//if it is other column/diagonal
                  if(board[targetRow][col].getSide() != this.getSide()){
-                     Main.gui.setRed(targetRow, col);
+                     if(!isDryRun){
+                         Main.gui.setRed(targetRow, col);
+                     }
+                     else{checkedSpots[curSpot] = new Coordinate(targetRow, col);}
+                     curSpot++;
                  }
             }
         }
+        if(isDryRun) {BoolGrids.setCoords(checkedSpots); }
     }
+
 
 }
 
