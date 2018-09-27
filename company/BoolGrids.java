@@ -3,6 +3,7 @@ package com.company;
 public class BoolGrids {
 
     private static Coordinate[] checkedCoords;
+
     public static boolean[][] makeBoolBoard(boolean side){
         Piece[][] board = Main.board;
         boolean[][] boolBoard = new boolean[8][8];
@@ -29,11 +30,33 @@ public class BoolGrids {
             }
         }
         Main.setIsDryRun(false);
-        BoardChange.showGrids(boolBoard);
+        //BoardChange.showGrids(boolBoard);
         return boolBoard;
     }
     public static void setCoords(Coordinate[] coords){
         checkedCoords = coords;
     }
+
+    public static boolean doesRemoveCheck(Coordinate start, Coordinate end,  boolean side){
+        Piece[][] legacyBoard = Main.board;//hopefully won't need
+        boolean[][] legacyBoolBoard = Main.getBoolGrid(!side);//!side or side?
+
+        Piece[][] futureBoard = BoardChange.movePiece(start, end);
+        boolean[][] theoBoard = makeBoolBoard(!side);
+
+        Main.setBoolBoard(theoBoard, !side);
+        Main.board = futureBoard;
+
+        boolean removesCheck = !Main.gui.kingInCheck(side);
+
+        Main.setBoolBoard(legacyBoolBoard, !side);
+        Main.board = legacyBoard;
+        Main.gui.resetNames();
+
+        return removesCheck;
+    }
+
+
+   // public static boolean isInFutureCheck()
 
 }

@@ -1,4 +1,6 @@
 package com.company;
+import org.omg.CORBA.SystemException;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -33,14 +35,15 @@ class GuiBase extends Frame implements ActionListener{
         cf.setVisible(true);
     }
     public void actionPerformed(ActionEvent ae){
-        Coordinate s = getCoordinates(ae.getSource().toString());
-        int row = s.getRow();
-        int col = s.getCol();
+        Coordinate targetSquare = getCoordinates(ae.getSource().toString());
+        int row = targetSquare.getRow();
+        int col = targetSquare.getCol();
         boolean side = Main.getPlaySide();
         Piece[][] board = Main.board;
 
         int colour = GuiBoard[row][col].getBackground().getRGB();
-       if(colour == -16711681 || colour == -65536){//if it is blue or red
+
+        if(colour == -16711681 || colour == -65536){//if it is blue or red
            Coordinate target = new Coordinate(row, col);
             BoardChange.movePiece(lastMove, target);
             resetNames();
@@ -54,11 +57,12 @@ class GuiBase extends Frame implements ActionListener{
         String squareName = board[row][col].getName();
         if(squareName.equals("empty")){
             resetColours();
-            cf.repaint();
-            return;
         }
-        if(board[row][col].getSide() == side){//if it is their turn
-            board[row][col].CheckValidSquares(s);
+        else if(board[row][col].getSide() == side){//if it is their turn
+            if(kingInCheck(side)){
+                Main.setKingInCheck(side);
+            }
+            board[row][col].CheckValidSquares(targetSquare);
         }
         else{
             resetColours();
@@ -77,7 +81,7 @@ class GuiBase extends Frame implements ActionListener{
     }
 
     public void setBlue(int row, int col){
-        GuiBoard[row][col].setBackground(Color.cyan);
+            GuiBoard[row][col].setBackground(Color.cyan);
     }
 
     public void setRed(int row, int col){
@@ -106,7 +110,7 @@ class GuiBase extends Frame implements ActionListener{
         cf.repaint();
     }
 
-    private void resetNames(){
+    public void resetNames(){
         for(int row = 0; row < 8; row++){
             for(int col = 0; col <8; col++){
                 String name = Main.board[row][col].getName();
@@ -130,10 +134,56 @@ class GuiBase extends Frame implements ActionListener{
             return name;
         }
     }
+
     private Color sideColour(int row, int col){
         boolean side = Main.board[row][col].getSide();
         if(side){ return Color.WHITE; }
         else{ return Color.black; }
+    }
+
+    public boolean kingInCheck(boolean side){
+        if(Main.getRound() < 3){
+            return false;
+        }
+        Coordinate kingPos = whereKing(side);
+        int row = kingPos.getRow();
+        int col = kingPos.getCol();
+        boolean[][] boolGrid = Main.getBoolGrid(!side);
+        //BoardChange.showGrids(boolGrid);
+        return(boolGrid[row][col]);
+        //if kings position is checked by opposing team
+    }
+
+    private Coordinate whereKing(boolean side){
+        boolean pieceSide;
+        String name;
+        Piece[][] board = Main.board;
+        for(int row = 0; row < 8; ++row){
+            for(int col = 0; col < 8; ++col){
+                name = board[row][col].getName();
+                pieceSide = board[row][col].getSide();
+                if(name.equals("king") && (pieceSide == side)){
+                    return new Coordinate(row, col);
+                }
+            }
+        }
+        throw new IndexOutOfBoundsException("Error 2315: Something went very wrong");
+    }
+
+    private boolean canMoveThere(int row, int col){
+        if(Main.isSomeoneChecked()){
+            Coordinate end = new Coordinate(row, col);
+            Coordinate start = lastMove;
+
+            if(BoolGrids.doesRemoveCheck(start, end, Main.getPlaySide())){
+                Main.kingsUnchecked();
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
     }
 
 }

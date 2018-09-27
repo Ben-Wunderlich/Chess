@@ -60,7 +60,9 @@ public class BoardChange {
         }
     }
 
-    public static void movePiece(Coordinate start, Coordinate end){
+    public static Piece[][] movePiece(Coordinate start, Coordinate end){
+        Main.incrRound();
+
         Piece[][] board = Main.board;
         Piece[][] modBoard = board;
 
@@ -79,12 +81,13 @@ public class BoardChange {
 
         modBoard[strtRow][strtCol] = saveEnd;
 
+        return modBoard;
     }
 
     public static void showGrids(boolean[][] board){
-        for(int row = 0; row < 8; row++){
-            for(int col = 0; col<8; col++){
-                //System.out.printf("%-6s", board[row][col]);
+        for(int row = 0; row < board.length; row++){
+            for(int col = 0; col<board[0].length; col++){
+                System.out.printf("%-6s", board[row][col]);
             }
         }
     }

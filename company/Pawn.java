@@ -48,12 +48,13 @@ public class Pawn extends Piece {
                 }
             }
             else if (col != column) {//if it is other column/diagonal
-                 if(board[targetRow][col].getSide() != this.getSide()){
-                     if(!isDryRun){
+                if(isDryRun){checkedSpots[curSpot] = new Coordinate(targetRow, col);}
+                curSpot++;
+
+                if(board[targetRow][col].getSide() != this.getSide()){
+                     if(!isDryRun) {
                          Main.gui.setRed(targetRow, col);
                      }
-                     else{checkedSpots[curSpot] = new Coordinate(targetRow, col);}
-                     curSpot++;
                  }
             }
         }

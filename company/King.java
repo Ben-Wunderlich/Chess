@@ -15,7 +15,11 @@ public class King extends Piece{
         boolean theSide;
         String targetName;
 
-        Coordinate[] checkedSpots = new Coordinate[8];
+        if(!safeToMove(rows, column, getSide())){
+            boolean kingChecked = true;//impliment this
+        }
+
+        Coordinate[] checkedSpots = new Coordinate[20];
         int curspot = 0;
         boolean isDryRun = Main.getIsDryRun();
 
@@ -26,12 +30,13 @@ public class King extends Piece{
                 }
 
                 targetName = board[row][col].getName();
+
                 if (targetName.equals("empty")){
-                    if(!isDryRun) {
+                    if(!isDryRun && safeToMove(row, col, getSide())) {
                         Main.gui.setBlue(row, col);
                         continue;
                     }
-                    else{
+                    else if(isDryRun){
                         checkedSpots[curspot] = new Coordinate(row, col);
                         curspot++;
                     }
@@ -39,7 +44,7 @@ public class King extends Piece{
 
                 theSide = board[row][col].getSide();
                 if (theSide != this.getSide()){
-                    if(!isDryRun) {
+                    if(!isDryRun  && safeToMove(row, col, getSide())) {
                         Main.gui.setRed(row, col);
                     }
                     else{
@@ -50,5 +55,18 @@ public class King extends Piece{
             }
         }
         if(isDryRun) {BoolGrids.setCoords(checkedSpots); }
+    }
+
+    private boolean safeToMove(int row, int col, boolean side){
+        if(Main.getRound() < 3){
+            return true;
+        }
+        boolean[][] enemyBoard = Main.getBoolGrid(!side);
+        if(enemyBoard[row][col]){//if space is checked
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }
