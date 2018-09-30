@@ -6,22 +6,12 @@ public class King extends Piece{
         this.setName("king");
     }
 
-    public void CheckValidSquares(Coordinate location){
-        Piece[][] board = Main.board;
+    public void CheckValidSquares(Piece[][] board, Coordinate location){
         int column = location.getCol();
         int rows = location.getRow();
 
-        Main.gui.resetColours();
         boolean theSide;
         String targetName;
-
-        if(!safeToMove(rows, column, getSide())){
-            boolean kingChecked = true;//impliment this
-        }
-
-        Coordinate[] checkedSpots = new Coordinate[20];
-        int curspot = 0;
-        boolean isDryRun = Main.getIsDryRun();
 
         for(int col = column-1; col <= column+1; ++col){
             for(int row = rows-1; row <= rows+1; ++row){
@@ -31,30 +21,20 @@ public class King extends Piece{
 
                 targetName = board[row][col].getName();
 
-                if (targetName.equals("empty")){
-                    if(!isDryRun && safeToMove(row, col, getSide())) {
-                        Main.gui.setBlue(row, col);
-                        continue;
-                    }
-                    else if(isDryRun){
-                        checkedSpots[curspot] = new Coordinate(row, col);
-                        curspot++;
-                    }
+                if(!safeToMove(row, col, getSide())){
+                    continue;
                 }
 
+                if (targetName.equals("empty")) {
+                    Main.addTarget(row, col, 0, 0);
+                    continue;
+                }
                 theSide = board[row][col].getSide();
                 if (theSide != this.getSide()){
-                    if(!isDryRun  && safeToMove(row, col, getSide())) {
-                        Main.gui.setRed(row, col);
-                    }
-                    else{
-                        checkedSpots[curspot] = new Coordinate(row, col);
-                        curspot++;
-                    }
+                    Main.addTarget(row, col, 1, 0);
                 }
             }
         }
-        if(isDryRun) {BoolGrids.setCoords(checkedSpots); }
     }
 
     private boolean safeToMove(int row, int col, boolean side){

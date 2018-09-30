@@ -4,7 +4,10 @@ public class Coordinate {
     private int ROW;
     private int COL;
 
-    public Coordinate(int row, int col){
+    public Coordinate(int row, int col) throws CoordinateException{
+        if(row < 0 || col < 0){
+            throw new CoordinateException("Coordinate cannot be less than 0");
+        }
         ROW = row;
         COL = col;
     }

@@ -7,8 +7,7 @@ public class Pawn extends Piece {
         this.setName("pawn");
     }
 
-    public void CheckValidSquares(Coordinate location){
-        Piece[][] board = Main.board;
+    public void CheckValidSquares(Piece[][] board, Coordinate location){
         int column = location.getCol();
         int row = location.getRow();
 
@@ -16,11 +15,6 @@ public class Pawn extends Piece {
         if(!this.getSide()){
             side_factor = 1;
         }
-
-        boolean isDryRun = Main.getIsDryRun();
-
-        Coordinate[] checkedSpots = new Coordinate[2];
-        int curSpot = 0;
 
         int targetRow = row + side_factor;
 
@@ -31,34 +25,22 @@ public class Pawn extends Piece {
             }
             if (board[targetRow][col].getName().equals("empty")){//if a square is empty
                 if(col == column){//if that square is directly in front of it
-                    if(!isDryRun) {
-                        Main.gui.setBlue(targetRow, col);
-                    }
+                    Main.addTarget(targetRow, col, 0, 1);
 
                     if(!this.hasMoved() && board[targetRow + side_factor][col].getName().equals("empty")){
                         //if hasnt move and one square up is enpty
-                        if(!isDryRun){
-                            Main.gui.setBlue(targetRow+side_factor, col);
-                        }
+                        Main.addTarget(targetRow+side_factor, col, 0, 1);
                     }
-                }
-                else if(isDryRun && col != column){
-                    checkedSpots[curSpot] = new Coordinate(targetRow, col);
-                    curSpot++;
                 }
             }
             else if (col != column) {//if it is other column/diagonal
-                if(isDryRun){checkedSpots[curSpot] = new Coordinate(targetRow, col);}
-                curSpot++;
 
                 if(board[targetRow][col].getSide() != this.getSide()){
-                     if(!isDryRun) {
-                         Main.gui.setRed(targetRow, col);
-                     }
-                 }
+                    //if it is an enemy
+                    Main.addTarget(targetRow, col, 1, 0);
+                }
             }
         }
-        if(isDryRun) {BoolGrids.setCoords(checkedSpots); }
     }
 
 

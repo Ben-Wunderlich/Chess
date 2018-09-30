@@ -22,7 +22,6 @@ public class Main{
     public static Piece[][] board;
     public static GuiBase gui;
     private static boolean playSide = true;
-    private static boolean isDryRun = false;
     private static boolean kingChecked = false;
 
     private static int round = 1;
@@ -32,16 +31,9 @@ public class Main{
     private static TargetSquares targets;
 
     public static void main(String[] args) {
-        ///Random rand = new Random();
-        //System.out.println(rand.nextInt(6)); // between 0-5
-
-        boolean currSide = true;
         board = BoardChange.makeBoard();
         targets = new TargetSquares();
         gui = new GuiBase();
-        //showBoard(board);
-        System.out.println("\n");
-
     }
 
      public static boolean getPlaySide(){
@@ -59,12 +51,6 @@ public class Main{
             checkedSquaresBlack = newBoard;
         }
     }
-    public static boolean getIsDryRun(){
-        return isDryRun;
-    }
-    public static void setIsDryRun(boolean isUnlocked){
-        isDryRun = isUnlocked;
-    }
 
     public static boolean[][] getBoolGrid(boolean side){
         if(side){return checkedSquaresWhite;}
@@ -75,7 +61,7 @@ public class Main{
 
     public static void incrRound(){round++;}
 
-    public static void setKingInCheck(boolean side){
+    public static void setKingInCheck(){
         kingChecked = true;
     }
 
@@ -90,8 +76,20 @@ public class Main{
     public static int[][] getTargets(){
         return targets.getTarget();
     }
-    public static void setTarget(int row, int col, boolean colour){
-        targets.addTarget(row, col, colour);
+    public static void addTarget(int row, int col, int colour, int isPawnVert){
+        targets.addTarget(row, col, colour, isPawnVert);
+    }
+
+    public static void addTarget(int[] target){
+        targets.addTarget(target);
+    }
+
+    public static boolean hasTarget(){
+        return targets.hasATarget();
+    }
+
+    public static void clearTargets(){
+        targets.clearList();
     }
 
 }

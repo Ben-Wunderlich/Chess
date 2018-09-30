@@ -1,7 +1,5 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class Piece {
     private String name;
     private boolean side; // note that white is true and black is false
@@ -21,31 +19,21 @@ public class Piece {
         return this.side;
     }
 
-    Coordinate[] checkedSpots;
-    int curSpot = 0;
-    public void CheckValidSquares(Coordinate location){
-        curSpot = 0;
-        checkedSpots = new Coordinate[28];
+    public void CheckValidSquares(Piece[][] board, Coordinate location){
         int[] rowFactor = this.rowFactors;
         int[] colFactor = this.colFactors;
 
         for(int i = 0;i < rowFactor.length;i++){//could use either as max
             int curRowFact = rowFactor[i];
             int curColFact = colFactor[i];
-            checkDirection(location, curRowFact, curColFact);
+            checkDirection(board, location, curRowFact, curColFact);
         }
-
-        if(Main.getIsDryRun()) {
-            BoolGrids.setCoords(checkedSpots); }
     }
 
-    public void checkDirection(Coordinate location, int rowFactor, int colFactor){
-        Piece[][] board = Main.board;
+    public void checkDirection(Piece[][] board, Coordinate location, int rowFactor, int colFactor){
         boolean hitEnd = false;
         int row = location.getRow();
         int col = location.getCol();
-
-        boolean isDryRun = Main.getIsDryRun();
 
         while(!hitEnd){
             row += rowFactor;
@@ -56,22 +44,11 @@ public class Piece {
             }
 
             if(board[row][col].getName().equals("empty")){
-                if(!isDryRun) {
-                    Main.gui.setBlue(row, col);
-                }
-                else{checkedSpots[curSpot] = new Coordinate(row, col);
-                curSpot++;
-                }
+                Main.addTarget(row, col, 0, 0);
                 continue;
             }
             if(board[row][col].side != this.side){
-                if(!isDryRun){
-                    Main.gui.setRed(row, col);
-                }
-                else{
-                    checkedSpots[curSpot] = new Coordinate(row, col);
-                    curSpot++;
-                }
+                Main.addTarget(row, col, 1, 0);
             }
             hitEnd = true;
         }
@@ -81,7 +58,7 @@ public class Piece {
         if(row < 0 || col < 0){
             return false;
         }
-        if (row > Main.board.length-1 || col > Main.board[0].length-1){
+        if (row > 7 || col > 7){
             return false;
         }
         return true;

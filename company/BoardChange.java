@@ -84,6 +84,26 @@ public class BoardChange {
         return modBoard;
     }
 
+    public static Piece[][] movePiece(Piece[][] board, Coordinate start, Coordinate end){
+
+        Piece[][] modBoard = board;
+
+        int endRow = end.getRow();
+        int endCol = end.getCol();
+        int strtRow = start.getRow();
+        int strtCol = start.getCol();
+
+        Piece saveEnd = new Empty(false);
+
+        modBoard[endRow][endCol] = board[strtRow][strtCol];//makes destination be start
+
+        modBoard[strtRow][strtCol] = saveEnd;
+
+        return modBoard;
+    }
+
+
+
     public static void showGrids(boolean[][] board){
         for(int row = 0; row < board.length; row++){
             for(int col = 0; col<board[0].length; col++){

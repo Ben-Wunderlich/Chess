@@ -1,5 +1,4 @@
 package com.company;
-import org.omg.CORBA.SystemException;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -43,8 +42,9 @@ class GuiBase extends Frame implements ActionListener{
 
         int colour = GuiBoard[row][col].getBackground().getRGB();
 
+
         if(colour == -16711681 || colour == -65536){//if it is blue or red
-           Coordinate target = new Coordinate(row, col);
+            Coordinate target = new Coordinate(row, col);
             BoardChange.movePiece(lastMove, target);
             resetNames();
             resetColours();
@@ -59,14 +59,14 @@ class GuiBase extends Frame implements ActionListener{
             resetColours();
         }
         else if(board[row][col].getSide() == side){//if it is their turn
-            if(kingInCheck(side)){
-                Main.setKingInCheck(side);
+            board[row][col].CheckValidSquares(board, targetSquare);
+
+            if(kingInCheck(board, Main.getBoolGrid(!side), side)){
+                BoolGrids.doesRemoveCheck(targetSquare, side);
             }
-            board[row][col].CheckValidSquares(targetSquare);
+            applyColours();
         }
-        else{
-            resetColours();
-        }
+        else{ resetColours(); }
     }
 
     private static Coordinate getCoordinates(String source){
@@ -141,23 +141,21 @@ class GuiBase extends Frame implements ActionListener{
         else{ return Color.black; }
     }
 
-    public boolean kingInCheck(boolean side){
+    public boolean kingInCheck(Piece[][] board, boolean[][] boolGrid, boolean side){
         if(Main.getRound() < 3){
             return false;
         }
-        Coordinate kingPos = whereKing(side);
+        Coordinate kingPos = whereKing(board, side);
         int row = kingPos.getRow();
         int col = kingPos.getCol();
-        boolean[][] boolGrid = Main.getBoolGrid(!side);
         //BoardChange.showGrids(boolGrid);
         return(boolGrid[row][col]);
         //if kings position is checked by opposing team
     }
 
-    private Coordinate whereKing(boolean side){
+    private Coordinate whereKing(Piece[][] board, boolean side){
         boolean pieceSide;
         String name;
-        Piece[][] board = Main.board;
         for(int row = 0; row < 8; ++row){
             for(int col = 0; col < 8; ++col){
                 name = board[row][col].getName();
@@ -170,7 +168,8 @@ class GuiBase extends Frame implements ActionListener{
         throw new IndexOutOfBoundsException("Error 2315: Something went very wrong");
     }
 
-    private boolean canMoveThere(int row, int col){
+
+    /*private boolean canMoveThere(int row, int col){
         if(Main.isSomeoneChecked()){
             Coordinate end = new Coordinate(row, col);
             Coordinate start = lastMove;
@@ -184,6 +183,27 @@ class GuiBase extends Frame implements ActionListener{
             }
         }
         return true;
+    }*/
+
+    private void applyColours(){
+        resetColours();
+        if(!Main.hasTarget()){return;}
+
+        int[][] targets = Main.getTargets();
+        for(int i = 0; i < targets.length; ++i){
+            if(targets[i][2] == 1){
+                setRed(targets[i][0], targets[i][1]);
+            }
+            else{setBlue(targets[i][0], targets[i][1]);}
+        }
+    }
+    public void setColour(int[] target){
+        if(target[2] == 1){
+            setRed(target[0], target[1]);
+        }
+        else{
+            setBlue(target[0], target[1]);
+        }
     }
 
 }
